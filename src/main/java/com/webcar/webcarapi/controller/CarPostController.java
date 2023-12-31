@@ -3,6 +3,8 @@ package com.webcar.webcarapi.controller;
 import com.webcar.webcarapi.dto.CarPostDTO;
 import com.webcar.webcarapi.message.KafkaProducerMessage;
 import com.webcar.webcarapi.service.CarPostStoreService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/api/car")
 public class CarPostController {
 
+    private final Logger LOG = (Logger) LoggerFactory.getLogger(CarPostController.class);
+
     @Autowired
     private CarPostStoreService carPostStoreService;
 
@@ -22,6 +26,7 @@ public class CarPostController {
 
     @PostMapping("/post")
     public ResponseEntity postCarforSale(@RequestBody CarPostDTO carPostDTO) {
+        LOG.info("CREATED NEW CAR - Producer Car Post Information: {}", carPostDTO);
         kafkaProducerMessage.sendMessage(carPostDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
